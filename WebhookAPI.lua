@@ -51,7 +51,7 @@ function webhook:Send(url)
         Body = HttpService:JSONEncode(deepCopyNoFunc(self))
     }
 
-    local request = request and syn.request or https_request
+    local request = request and syn.request or http_request
 
     request(obj);
 end
