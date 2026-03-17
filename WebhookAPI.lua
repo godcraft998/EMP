@@ -42,7 +42,7 @@ function modules.createWebhook()
 end
 
 function webhook:Send(url)
-    local request = {
+    local res = {
         Url = url,
         Method = "POST",
         Headers = {
@@ -51,7 +51,8 @@ function webhook:Send(url)
         Body = HttpService:JSONEncode(deepCopyNoFunc(self))
     }
 
-    return request(request);
+    local request = syn and syn.request or http_request or request
+    return request(res);
 end
 
 function webhook:setContent(content)
