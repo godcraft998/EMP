@@ -1,5 +1,7 @@
 local modules = {}
 
+local FunctionAPI = loadstring(game:HttpGet("https://raw.githubusercontent.com/godcraft998/EMP/refs/heads/main/FunctionAPI.lua"))()
+
 local HttpService = game:GetService("HttpService");
 
 local webhook = {}
@@ -42,7 +44,7 @@ function modules.createWebhook()
 end
 
 function webhook:Send(url)
-    local obj = {
+    local requests = {
         Url = url,
         Method = "POST",
         Headers = {
@@ -51,9 +53,7 @@ function webhook:Send(url)
         Body = HttpService:JSONEncode(deepCopyNoFunc(self))
     }
 
-    local request = request and syn.request or http_request
-
-    request(obj);
+    FunctionAPI.hook("request")(requests)
 end
 
 function webhook:setContent(content)
