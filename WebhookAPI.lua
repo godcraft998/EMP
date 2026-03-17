@@ -11,7 +11,7 @@ embeds.__index = embeds
 local field = {}
 field.__index = field
 
-function deepCopyNoFunc(original, seen)
+local function deepCopyNoFunc(original, seen)
     if type(original) ~= "table" then
         return original
     end
@@ -42,7 +42,7 @@ function modules.createWebhook()
 end
 
 function webhook:Send(url)
-    local res = {
+    local obj = {
         Url = url,
         Method = "POST",
         Headers = {
@@ -51,8 +51,9 @@ function webhook:Send(url)
         Body = HttpService:JSONEncode(deepCopyNoFunc(self))
     }
 
-    local request = syn and syn.request or http_request or request
-    return request(res);
+    local request = request and syn.request or https_request
+
+    request(obj);
 end
 
 function webhook:setContent(content)
