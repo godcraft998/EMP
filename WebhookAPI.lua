@@ -10,9 +10,6 @@ webhook.__index = webhook
 local embeds = {}
 embeds.__index = embeds
 
-local field = {}
-field.__index = field
-
 local function deepCopyNoFunc(original, seen)
     if type(original) ~= "table" then
         return original
@@ -148,21 +145,6 @@ function embeds:addField(...)
     obj.name, obj.value, obj.inline = ...
     table.insert(self.fields, obj)
     return obj
-end
-
-function field:setName(name)
-    self.name = name
-    return self
-end
-
-function field:setValue(value)
-    self.value = value
-    return self
-end
-
-function field:setInline(inline)
-    self.inline = inline;
-    return self
 end
 
 return modules
