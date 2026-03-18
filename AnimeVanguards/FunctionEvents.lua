@@ -49,4 +49,15 @@ function modules:StatReroll(UniqueID, RollType)
 end
 
 
+function modules:PurchaseItem(Shop, Item, Amount)
+    local args = {
+        [1] = Shop,
+        [2] = Item,
+        [3] = Amount
+    }
+
+    game:GetService("ReplicatedStorage"):WaitForChild("Networking"):WaitForChild("Shop"):WaitForChild("PurchaseItem"):FireServer(unpack(args))
+end
+
+
 return modules
