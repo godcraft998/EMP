@@ -7,6 +7,24 @@ local function GetUnits()
     return OwnedUnitsHandler:GetUnits()
 end
 
+function modules:FindUnitByID(ID)
+    local Units = GetUnits()
+
+    for _,v in pairs(Units) do
+        if (v.Identifier == ID) then
+            return v
+        end
+    end
+end
+
+function modules:FindUnitByRarity(Rarity)
+    for _,v in pairs(GetUnits()) do
+        if (v.UnitData.Rarity == 'Rarity') then
+            return v
+        end
+    end
+end
+
 function modules:GetName(UniqueID)
     local Unit = GetUnits()[UniqueID]
     if Unit then
