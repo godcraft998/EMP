@@ -59,5 +59,31 @@ function modules:PurchaseItem(Shop, Item, Amount)
     game:GetService("ReplicatedStorage"):WaitForChild("Networking"):WaitForChild("Shop"):WaitForChild("PurchaseItem"):FireServer(unpack(args))
 end
 
+function modules:RequestStock(Shop)
+    local RequestStock = game:GetService("ReplicatedStorage"):WaitForChild("Networking"):WaitForChild("Shop"):WaitForChild("RequestStock");
+
+    local done = false
+    local response
+
+    local conn
+    conn = RequestStock.OnClientEvent:Connect(function(name, stocks)
+        if name == Shop then
+            response = stocks.Stock
+            done = true
+            conn:Disconnect()
+        end
+    end)
+
+    RequestStock:FireServer(Shop)
+
+    local timeout = 1.5
+    local start = tick()
+
+    repeat
+        task.wait()
+    until done or (tick() - start >= timeout)
+
+    return response
+end
 
 return modules
