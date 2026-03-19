@@ -1,28 +1,32 @@
 local modules = {}
 
-local function TraitRerollListening()
-    local Event = game:GetService("ReplicatedStorage"):WaitForChild("Networking"):WaitForChild("Units"):WaitForChild("TraitEvent")
-
+local function Callback(args, RemoteEvent, timeout, callback)
     local done = false
     local response
 
     local conn
-    conn = Event.OnClientEvent:Connect(function(name, trait)
-        if name == 'Replicate' then
-            response = trait
+    conn = RemoteEvent.OnClientEvent:Connect(function(...)
+        local result = callback(...)
+        if result then
+            response = result
             done = true
             conn:Disconnect()
         end
     end)
 
-    local timeout = 1.5
+    RemoteEvent:FireServer(unpack(args))
+
     local start = tick()
 
     repeat
         task.wait()
     until done or (tick() - start >= timeout)
 
-    return response[1], response[2]
+    if conn then
+        conn:Disconnect()
+    end
+
+    return response
 end
 
 function modules:TraitReroll(UniqueID)
@@ -34,8 +38,12 @@ function modules:TraitReroll(UniqueID)
         }
     }
 
-    TraitRerollListening()
-    game:GetService("ReplicatedStorage"):WaitForChild("Networking"):WaitForChild("Units"):WaitForChild("TraitEvent"):FireServer(unpack(args))
+    local TraitEvent = game:GetService("ReplicatedStorage"):WaitForChild("Networking"):WaitForChild("Units"):WaitForChild("TraitEvent")
+    return Callback(args, TraitEvent, 1.5, function(Name, Data)
+        if Name == 'Replicate' then
+            return Data
+        end
+    end)
 end
 
 function modules:StatReroll(UniqueID, RollType)
@@ -45,9 +53,22 @@ function modules:StatReroll(UniqueID, RollType)
         [2] = UniqueID
     }
 
-    game:GetService("ReplicatedStorage"):WaitForChild("Networking"):WaitForChild("Units"):WaitForChild("StatRerollEvent"):FireServer(unpack(args))
+    local StatRerollEvent = game:GetService("ReplicatedStorage"):WaitForChild("Networking"):WaitForChild("Units"):WaitForChild("StatRerollEvent")
+    return Callback(args, StatRerollEvent, 1.5, function(UnitData)
+        return UnitData.Statistics
+    end)
 end
 
+function modules:GetEventCurrency(Event)
+    local args = {
+        Event
+    }
+
+    local RemoteEvent = game:GetService("ReplicatedStorage"):WaitForChild("Networking"):WaitForChild("Events"):WaitForChild("EventCurrencyEvent")
+    return Callback(args, RemoteEvent, 1.5, function(Name, Currency)
+        return Currency
+    end)
+end
 
 function modules:PurchaseItem(Shop, Item, Amount)
     local args = {
