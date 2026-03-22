@@ -2,9 +2,13 @@ local Players = game:GetService("Players")
 local LP = Players.LocalPlayer
 local Gui = LP.PlayerGui
 local UIS = game:GetService("UserInputService")
-local StarterPlayer = game:GetService("StarterPlayer")
 
+local StarterPlayer = game:GetService("StarterPlayer")
+local CurrencyHandler = require(StarterPlayer.Modules.Gameplay.CurrencyHandler)
+
+local OwnedUnits = loadstring(game:HttpGet("https://raw.githubusercontent.com/godcraft998/EMP/refs/heads/main/AnimeVanguards/OwnedUnits.lua"))();
 local ConfigLoader = loadstring(game:HttpGet("https://raw.githubusercontent.com/godcraft998/EMP/refs/heads/main/AnimeVanguards/ConfigLoader.lua"))();
+local FunctionEvent = loadstring(game:HttpGet("https://raw.githubusercontent.com/godcraft998/EMP/refs/heads/main/AnimeVanguards/FunctionEvents.lua"))();
 
 local ScriptConfig = {
     Scores = {
@@ -13,15 +17,34 @@ local ScriptConfig = {
         ['Crown of the Sun']      = {Easy=0, Medium=0, Hard=0, Expert=0}
     },
     Settings = {
-        Toogle = false7
+        Toogle = false
     },
-    Webhook = {
-        url = ""
+    Stocks = {
+        Winter26 = {
+            TraitRerolls = 200
+        }
     }
 }
 
 local Config = {
-    Running = true
+    Running = true,
+    Buyed = {
+        Winter26 = {
+            TraitRerolls = false
+        }
+    },
+    Rerolling = {
+        Trait = false
+    }
+}
+
+local State = {
+    TrailRerolls = {
+        rolling = false,
+        selected = nil,
+        trait = nil
+    },
+    TraitStorage = {}
 }
 
 local function CheckScores()
@@ -205,7 +228,7 @@ local function buyChips(amount)
 end
 
 local function startBuyChips()
-    local currency = 255
+    local currency = FunctionEvent:GetEventCurrency("Skele King's Jam Session")
 
     while currency > 0 do
         local amount = currency
@@ -218,6 +241,70 @@ local function startBuyChips()
     end
 end
 
+local function BuyTraitRerolls()
+    local currency = CurrencyHandler.GetCurrencyByName("Presents26");
+    local stock = FunctionEvent:RequestStock("Winter Shop").TraitRerolls;
+
+    if currency > 1500 and stock > 0 then
+        if currency >= (stock * 1500) then
+            FunctionEvent:PurchaseItem("Winter Shop", "TraitRerolls", stock);
+            warn('[WinterShop] Buy ' .. stock .. ' Trait Rerolls')
+        else
+            FunctionEvent:PurchaseItem("Winter Shop", "TraitRerolls", math.floor(currency / 1500))
+            warn('[WinterShop] Buy ' .. math.floor(currency / 1500) .. ' Trait Rerolls')
+        end
+    else
+        Config.Buyed.Winter26.TraitRerolls = true
+    end
+end
+
+local function SendWebhook(UniqueID, Spend)
+    local webhook = WebhookAPI.createWebhook();
+    local embeds = webhook:addEmbeds()
+
+    embeds:setTitle('ᴀɴɪᴍᴇ ᴠᴀɴɢᴜᴀʀᴅꜱ ─ ᴛʀᴀɪᴛ ʀᴇʀᴏʟʟ')
+    embeds:addField("Player ID: " .. "||" .. game:GetService("Players").LocalPlayer.DisplayName .. "||", "", false)
+    embeds:addField(OwnedUnits:GetName(UniqueID), 
+                    " - Spend: " .. Spend .. "<:av_trait_reroll:1484372107327438898>\n" ..
+                    " - Trait: <:av_trait_monarch:1484372181772406928>",
+                    true)
+
+    webhook:Send('https://discord.com/api/webhooks/1484371917816336416/jDlpbKWi0SGbu2lBLG21d-cfw7NlcSH959OhY4mfaY-eZOOckn6lpiyneUPWYc0RrCYr')
+end
+
+local function MonarchReroll()
+    State.TrailRerolls.rolling = true
+
+    local Spend = 0
+
+    if CurrencyHandler.GetCurrencyByName("TraitRerolls") > 0 then
+        local Unit = OwnedUnits:FindUnitByName("Ice Queen (Release)")
+        if Unit then
+            State.TrailRerolls.selected = Unit.UniqueIdentifier
+            while OwnedUnits:GetTrait(State.TrailRerolls.selected) ~= 'Monarch' and CurrencyHandler.GetCurrencyByName("TraitRerolls") > 0 do
+                local Data = FunctionEvent:TraitReroll(State.TrailRerolls.selected)
+                if (Data) then
+                    Spend+=1
+                    State.TrailRerolls.trait = Data[2]
+                    warn("[MonarchReroll] Reroll [Ice Queen (Release)] current trait: " .. Data[2])
+                    if (Data[2] == 'Monarch') then
+                        SendWebhook(State.TrailRerolls.selected, Spend)
+                    end
+                end
+                task.wait(math.random() * (0.2 - 0.1) + 0.1)
+            end
+            State.TrailRerolls.trait = nil
+            State.TrailRerolls.selected = nil
+        else
+            warn("[MonarchReroll] Ice Queen (Release) not found")
+        end
+    else
+        warn("[MonarchReroll] not enough trait reroll")
+    end
+
+    State.TrailRerolls.rolling = false
+end
+
 -- ========== CHECK LOOP ==========
 task.spawn(function()
     warn("EMP Hub: Authenticated")
@@ -227,6 +314,14 @@ task.spawn(function()
         if (CheckScores()) then
             pcall(startBuyChips);
             break;
+        end
+
+        if not Config.Buyed.Winter26.TraitRerolls then
+            task.spawn(BuyTraitRerolls)
+        end
+
+        if Config.Buyed.Winter26.TraitRerolls and not State.TrailRerolls.rolling then
+            task.spawn(MonarchReroll)
         end
 
         if not Gui:FindFirstChild("GuitarMinigame") then
