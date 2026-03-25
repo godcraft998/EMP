@@ -6,6 +6,8 @@ local UIS = game:GetService("UserInputService")
 local StarterPlayer = game:GetService("StarterPlayer")
 local CurrencyHandler = require(StarterPlayer.Modules.Gameplay.CurrencyHandler)
 
+local WebhookAPI = loadstring(game:HttpGet("https://raw.githubusercontent.com/godcraft998/EMP/refs/heads/main/WebhookAPI.lua"))()
+
 local OwnedUnits = loadstring(game:HttpGet("https://raw.githubusercontent.com/godcraft998/EMP/refs/heads/main/AnimeVanguards/OwnedUnits.lua"))();
 local ConfigLoader = loadstring(game:HttpGet("https://raw.githubusercontent.com/godcraft998/EMP/refs/heads/main/AnimeVanguards/ConfigLoader.lua"))();
 local FunctionEvent = loadstring(game:HttpGet("https://raw.githubusercontent.com/godcraft998/EMP/refs/heads/main/AnimeVanguards/FunctionEvents.lua"))();
@@ -258,13 +260,13 @@ local function BuyTraitRerolls()
     end
 end
 
-local function SendWebhook(UniqueID, Spend)
+local function SendWebhook(Spend)
     local webhook = WebhookAPI.createWebhook();
     local embeds = webhook:addEmbeds()
 
     embeds:setTitle('ᴀɴɪᴍᴇ ᴠᴀɴɢᴜᴀʀᴅꜱ ─ ᴛʀᴀɪᴛ ʀᴇʀᴏʟʟ')
     embeds:addField("Player ID: " .. "||" .. game:GetService("Players").LocalPlayer.DisplayName .. "||", "", false)
-    embeds:addField(OwnedUnits:GetName(UniqueID), 
+    embeds:addField("<:av_ice_queen_release:1479374524926398545> Ice Queen (Release)", 
                     " - Spend: " .. Spend .. "<:av_trait_reroll:1484372107327438898>\n" ..
                     " - Trait: <:av_trait_monarch:1484372181772406928>",
                     true)
@@ -288,7 +290,8 @@ local function MonarchReroll()
                     State.TrailRerolls.trait = Data[2]
                     warn("[MonarchReroll] Reroll [Ice Queen (Release)] current trait: " .. Data[2])
                     if (Data[2] == 'Monarch') then
-                        SendWebhook(State.TrailRerolls.selected, Spend)
+                        SendWebhook(Spend)
+                        print("Send Webhook")
                     end
                 end
                 task.wait(math.random() * (0.2 - 0.1) + 0.1)
