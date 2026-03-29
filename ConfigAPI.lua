@@ -27,9 +27,6 @@ function config:SaveConfig(Config)
         makefolder(self.Path)
     end
 
-    if not isfile(self.Path) then
-        writefile(self.Path, game:GetService("HttpService"):JSONEncode({}))
-    end
     writefile(self.Path, game:GetService("HttpService"):JSONEncode(Config))
 end
 
