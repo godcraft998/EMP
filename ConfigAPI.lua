@@ -1,8 +1,5 @@
 local loader = {}
 
--- Service
-local HttpService = game:GetService("HttpService")
-
 local config = {
     Path = "Config.json"
 }
@@ -31,9 +28,9 @@ function config:SaveConfig(Config)
     end
 
     if not isfile(self.Path) then
-        writefile(self.Path, HttpService:JSONEncode({}))
+        writefile(self.Path, game:GetService("HttpService"):JSONEncode({}))
     end
-    writefile(self.Path, HttpService:JSONEncode(Config))
+    writefile(self.Path, game:GetService("HttpService"):JSONEncode(Config))
 end
 
 return loader
