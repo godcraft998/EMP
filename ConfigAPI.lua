@@ -18,7 +18,7 @@ function config:LoadConfig()
         return
     else
         local jsonData = readfile(self.Path)
-        return HttpService:JSONDecode(jsonData)
+        return game:GetService("HttpService"):JSONDecode(jsonData)
     end
 end
 
