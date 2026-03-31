@@ -158,5 +158,32 @@ function modules.CreateMatch(data)
 
     return response
 end
+function modules.LoadMatches()
+    local MatchReplicationEvent = game:GetService("ReplicatedStorage").Networking.MatchReplicationEvent
 
+    local done = false
+    local response
+
+    local conn
+    conn = MatchReplicationEvent.OnClientEvent:Connect(function(action, data)
+        if action == "LoadMatches" then
+            response = data
+            done = true
+            conn:Disconnect()
+        end
+    end)
+
+    MatchReplicationEvent:FireServer("RetrieveMatches")
+
+    local start = tick()
+    repeat
+        task.wait()
+    until done or (tick() - start >= 2.5)
+
+    if conn then
+        conn:Disconnect()
+    end
+
+    return response
+end
 return modules
