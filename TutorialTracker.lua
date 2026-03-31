@@ -19,8 +19,7 @@ local ConfigAPI = loadstring(game:HttpGet("https://raw.githubusercontent.com/god
 local GamePlaceId = 16277809958
 
 if game.PlaceId == GamePlaceId and TutorialHandler.IsInTutorial then
-    local ConfigFile = ConfigAPI:CreateConfig();
-    ConfigFile:SetPath("EmP Hub/Anime Vanguards/Tutorial.json")
+    local ConfigFile = ConfigAPI:CreateConfig("EmP Hub/Anime Vanguards/Tutorial" .. game.Players.LocalPlayer.Name .. ".json");
     local Loaded = ConfigFile:LoadConfig()
 
     if not Loaded then
@@ -41,8 +40,7 @@ if game.PlaceId == GamePlaceId and TutorialHandler.IsInTutorial then
     }
     game:GetService("ReplicatedStorage"):WaitForChild("Networking"):WaitForChild("ClientListeners"):WaitForChild("NEWTutorialEvent"):FireServer(unpack(args))
 else
-    local ConfigFile = ConfigAPI:CreateConfig();
-    ConfigFile:SetPath("EmP Hub/Anime Vanguards/Tutorial.json")
+    local ConfigFile = ConfigAPI:CreateConfig("EmP Hub/Anime Vanguards/Tutorial" .. game.Players.LocalPlayer.Name .. ".json"); 
     local Loaded = ConfigFile:LoadConfig()
 
     if Loaded and Loaded.InTutorial then
