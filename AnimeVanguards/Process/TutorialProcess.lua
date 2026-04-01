@@ -1,7 +1,3 @@
-if not game:IsLoaded() then
-    game.Loaded:Wait()
-end
-
 local RS = game:GetService("ReplicatedStorage")
 local SP = game:GetService("StarterPlayer")
 
@@ -53,7 +49,7 @@ task.spawn(function()
             }
             game:GetService("ReplicatedStorage"):WaitForChild("Networking"):WaitForChild("ClientListeners"):WaitForChild("NEWTutorialEvent"):FireServer(unpack(args))
         else 
-            warn('normal lobby')
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/godcraft998/EMP/refs/heads/main/AnimeVanguards/Process/LobbyProcess.lua"))()
         end
     elseif game.PlaceId == PlaceId.Game and TutorialHandler.IsInTutorial then
         RandomWait(2.5, 5)
@@ -64,6 +60,6 @@ task.spawn(function()
         }
         game:GetService("ReplicatedStorage"):WaitForChild("Networking"):WaitForChild("ClientListeners"):WaitForChild("NEWTutorialEvent"):FireServer(unpack(args))
     else 
-        warn('normal in game')
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/godcraft998/EMP/refs/heads/main/AnimeVanguards/Process/GameProcess.lua"))()
     end
 end)
