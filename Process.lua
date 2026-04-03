@@ -11,18 +11,15 @@ local function printObject(instance)
     end
 end
 
-
+local RS = game:GetService("ReplicatedStorage")
 local SP = game:GetService("StarterPlayer")
 
-local RS = game:GetService("ReplicatedStorage")
-local Handler = require(SP.Modules.Interface.Loader.Events.JamSessionHandler)
+local Handler = require(SP.Modules.Interface.Loader.Gameplay.Raids.RaidShopDataHandler)
 
-local JamSessionEvents = RS.Networking.Events.JamSession
-local Remote_GetScores = JamSessionEvents.GetScores
+printObject(Handler.GetRaidShopData("Stage4").ShopData)
 
--- lấy dữ liệu của các bài đã chơi
-printObject(Handler)
+local CurrencyHandler = require(SP.Modules.Gameplay.CurrencyHandler)
+print(CurrencyHandler.GetCurrencyByName("HAPPYCoin"))
 
-local DataHandler = require(RS.Modules.Data.EventsData)
-
---Skele King's Jam Session
+local RaidsShopEvent = RS.Networking.Raids.RaidsShopEvent
+--RaidsShopEvent:FireServer("Purchase", { "Stage4", "Stat Chip", 400 })
