@@ -23,7 +23,7 @@
     end
 
     task.spawn(function()
-        task.wait(5)
+        random.wait(12.5, 15.5)
         features.AntiAFK()
 
         if game.PlaceId == PlaceId.Lobby then 

@@ -22,7 +22,7 @@ task.spawn(function()
     local playerLevel = player:GetAttribute("Level")
     local playerExperience = player:GetAttribute("Experience")
 
-    ToggleSetting()
+    ToggleSettings()
 
     random.wait(2.5, 5)
 
