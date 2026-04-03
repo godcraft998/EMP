@@ -6,41 +6,59 @@ local PlaceId = {
     Game = 16277809958
 }
 
-local function RandomWait(min, max)
-    task.wait(Random.new():NextNumber(2.5, 5))
+local random = {}
+function random.wait(min, max)
+    task.wait(math.random() * (max - min) + min)
+end
+
+local features = {}
+function features.AntiAFK()
+    for _, connection in pairs(getconnections(game.Players.LocalPlayer.Idled)) do
+        if connection["Disable"] then
+            connection["Disable"](connection)
+        elseif connection["Disconnect"] then
+            connection["Disconnect"](connection)
+        end
+    end
 end
 
 task.spawn(function()
     task.wait(5)
+    features.AntiAFK()
 
     if game.PlaceId == PlaceId.Lobby then 
 
         local DailyRewardsUI = game.Players.LocalPlayer.PlayerGui:FindFirstChild('DailyRewards')
+
+        print(DailyRewardsUI)
+
         if DailyRewardsUI then
             local Handler = require(SP.Modules.Gameplay.DailyRewards.DailyRewardsHandler)
-            RandomWait(0.5, 1.5)
+            random.wait(0.5, 1.5)
             Handler:CloseInterface()
         end
+        random.wait(0.25, 0.75)
         
         local NewPlayersUI = game.Players.LocalPlayer.PlayerGui:FindFirstChild('NewPlayers')
         if NewPlayersUI then
             local Handler = require(SP.Modules.Gameplay.DailyRewards.NewPlayer.NewPlayerHandler)
-            RandomWait(0.5, 1.5)
+            random.wait(0.5, 1.5)
             Handler:CloseInterface()
         end
+        random.wait(0.25, 0.75)
 
         local UpdateLogUI = game.Players.LocalPlayer.PlayerGui:FindFirstChild('UpdateLogFullScreen')
         if UpdateLogUI then
             local Handler = require(SP.Modules.Miscellaneous.UpdateLogHandler)
-            RandomWait(0.5, 1.5)
+            random.wait(0.5, 1.5)
             Handler:CloseInterface()
         end
 
-        RandomWait(0.5, 1.5)
+        random.wait(0.5, 1.5)
 
         local TutorialHandler = require(SP.Modules.Gameplay.ClientTutorialHandler)
         if TutorialHandler.IsInTutorial then
-            RandomWait(2.5, 5)
+            random.wait(2.5, 5)
 
             
             local args = {
@@ -49,10 +67,10 @@ task.spawn(function()
             }
             game:GetService("ReplicatedStorage"):WaitForChild("Networking"):WaitForChild("ClientListeners"):WaitForChild("NEWTutorialEvent"):FireServer(unpack(args))
         else 
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/godcraft998/EMP/refs/heads/main/AnimeVanguards/Process/LobbyProcess.lua"))()
+            --loadstring(game:HttpGet("https://raw.githubusercontent.com/godcraft998/EMP/refs/heads/main/AnimeVanguards/Process/LobbyProcess.lua"))()
         end
     elseif game.PlaceId == PlaceId.Game and TutorialHandler.IsInTutorial then
-        RandomWait(2.5, 5)
+        random.wait(2.5, 5)
 
         local args = {
             "PartOne",

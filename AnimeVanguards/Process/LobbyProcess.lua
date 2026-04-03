@@ -2,14 +2,15 @@ local player = game.Players.LocalPlayer
 
 local functionEvent = loadstring(game:HttpGet("https://raw.githubusercontent.com/godcraft998/EMP/refs/heads/main/AnimeVanguards/FunctionEvents.lua"))();
 
-local function r_wait(min, max)
-    return task.wait(min + math.random() * (max - min))
+local random = {}
+function random.wait(min, max)
+    task.wait(math.random() * (max - min) + min)
 end
 
 local function processLevel()
-    r_wait(1, 2)
+    random.wait(1, 2)
     functionEvent:WinterLTMEvent()
-    r_wait(2, 3)
+    random.wait(2, 3)
     functionEvent:StartMatch()
 end
 
