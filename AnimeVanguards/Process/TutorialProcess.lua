@@ -67,7 +67,7 @@
                 }
                 game:GetService("ReplicatedStorage"):WaitForChild("Networking"):WaitForChild("ClientListeners"):WaitForChild("NEWTutorialEvent"):FireServer(unpack(args))
             else 
-                --loadstring(game:HttpGet("https://raw.githubusercontent.com/godcraft998/EMP/refs/heads/main/AnimeVanguards/Process/LobbyProcess.lua"))()
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/godcraft998/EMP/refs/heads/main/AnimeVanguards/Process/LobbyProcess.lua"))()
             end
         elseif game.PlaceId == PlaceId.Game then
             local TutorialHandler = require(SP.Modules.Gameplay.Tutorial.ClientTutorialHandler)

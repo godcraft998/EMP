@@ -1,6 +1,6 @@
 local player = game.Players.LocalPlayer
 
-local functionEvent = loadstring(game:HttpGet("https://raw.githubusercontent.com/godcraft998/EMP/refs/heads/main/AnimeVanguards/FunctionEvents.lua"))();
+local functionEvent = loadstring(game:HttpGet("https://raw.githubusercontent.com/godcraft998/EMP/refs/heads/main/AnimeVanguards/FunctionEvents.lua"))()
 
 local random = {}
 function random.wait(min, max)
@@ -14,14 +14,20 @@ local function processLevel()
     functionEvent:StartMatch()
 end
 
+local function ToggleSettings()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/godcraft998/EMP/refs/heads/main/AnimeVanguards/FunctionEvents.lua"))();
+end
+
 task.spawn(function()
     local playerLevel = player:GetAttribute("Level")
     local playerExperience = player:GetAttribute("Experience")
+
+    ToggleSetting()
+
+    random.wait(2.5, 5)
 
     if playerLevel < 50 then
         processLevel()
         return
     end
-
-    
 end)
