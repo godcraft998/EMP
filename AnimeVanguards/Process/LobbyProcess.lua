@@ -15,14 +15,18 @@ local function processLevel()
 end
 
 local function ToggleSettings()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/godcraft998/EMP/refs/heads/main/AnimeVanguards/FunctionEvents.lua"))();
+    return loadstring(game:HttpGet("https://raw.githubusercontent.com/godcraft998/EMP/refs/heads/main/AnimeVanguards/FunctionEvents.lua"))();
 end
 
 task.spawn(function()
     local playerLevel = player:GetAttribute("Level")
     local playerExperience = player:GetAttribute("Experience")
 
-    ToggleSettings()
+    local toggle = ToggleSettings()
+    while not toggle do
+        task.wait(1)
+    end
+    print("toggled settings")
 
     random.wait(2.5, 5)
 

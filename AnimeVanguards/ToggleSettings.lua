@@ -46,3 +46,5 @@ for setting, toggle in pairs(ToggleConfig) do
     ToggleSetting(setting, toggle)
     wait(0.35)
 end
+
+return true
