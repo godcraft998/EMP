@@ -51,6 +51,7 @@ local state = {
         selected = nil,
         rerollQueue = {
             Vanguard = {},
+            Secret = {},
             Exclusive = {},
             Mythic = {}
         },
@@ -61,15 +62,18 @@ local state = {
     }
 }
 
+print(true)
+
 local function canRerollStats(unit)
     local Rarities = {
         Vanguard = true, 
+        Secret = true,
         Exclusive = true, 
         Mythic = true
     }
     if Rarities[unit.UnitData.Rarity] then
         local Stats = unit.Statistics;
-        if Stats.Damage.Tier ~= '神' and Stats.SPA.Tier ~= '神' and Stats.Range.Tier ~= '神' then
+        if Stats.Damage.Tier ~= '神' and Stats.SPA.Tier ~= '神' and Stats.Range.Tier ~= '神' and unit.Trait.Name ~= 'Monarch' then
             return true
         end
     end
@@ -77,7 +81,7 @@ local function canRerollStats(unit)
 end
 
 local function findUnit()
-    for _, category in ipairs({"Vanguard", "Exclusive", "Mythic"}) do
+    for _, category in ipairs({"Vanguard", "Secret", "Exclusive", "Mythic"}) do
         local id = state.StatReroll.rerollQueue[category][1]
         if id then
             state.StatReroll.selected = id
@@ -105,6 +109,7 @@ local function rollUnit()
             table.remove(state.StatReroll.rerollQueue[Unit.UnitData.Rarity], 1)
             state.StatReroll.history[Unit.UniqueIdentifier] = spend
             state.StatReroll.selected = nil
+            task.wait(2.5)
             break;
         end
         warn('Reroll', Unit.UnitData.Name, "stats, before stats:", Stats.Damage.Tier, Stats.SPA.Tier, Stats.Range.Tier)
