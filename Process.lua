@@ -14,28 +14,6 @@ end
 local RS = game:GetService("ReplicatedStorage")
 local SP = game:GetService("StarterPlayer")
 
-local SummonEvent = RS.Networking.Units.SummonEvent
-local UnitsEvent = RS.Networking.Units.UnitsEvent
+local Handler = require(SP.Modules.Gameplay.SettingsHandler)
 
-local Event = UnitsEvent
-
-local done = false
-
-local conn
-conn = Event.OnClientEvent:Connect(function(...)
-    printObject(...)
-
-    done = true
-end)
-
-
-local start = tick()
-repeat
-    task.wait()
-until done or (tick() - start >= 2.5)
-
-if conn then
-    conn:Disconnect()
-
-    print("OnClientEvent: timeout")
-end
+printObject(Handler.OnSettingsLoaded())
